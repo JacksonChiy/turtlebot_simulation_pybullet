@@ -27,7 +27,7 @@ def check_goal_reached(agents,goals):
     for i in agents:
         pos = p.getBasePositionAndOrientation(i)[0]
         goal = goals[i]
-        if(not checkPosWithBias(pos, goal, 0.2)):
+        if(not checkPosWithBias(pos, goal, 0.3)):
             return False
     return True
 
@@ -36,7 +36,7 @@ def check_next_reached(agents, schedule, index):
         pos = p.getBasePositionAndOrientation(i)[0]
         if(index >= len(schedule[i])):
             continue
-        if (not checkPosWithBias(pos, [schedule[i][index]["x"], schedule[i][index]["y"]], 0.2)):
+        if (not checkPosWithBias(pos, [schedule[i][index]["x"], schedule[i][index]["y"]], 0.3)):
             return False
     return True
 
@@ -103,7 +103,7 @@ def read_input(yaml_file, env_loaded):
             agents.append(boxId)
             goals[boxId] = i["goal"]
         dimensions = param["map"]["dimensions"]
-        p.resetDebugVisualizerCamera(cameraDistance=dimensions[0] * 1, cameraYaw=0, cameraPitch=-89,
+        p.resetDebugVisualizerCamera(cameraDistance=dimensions[0] * 0.9, cameraYaw=0, cameraPitch=-89,
                                      cameraTargetPosition=[dimensions[0] / 2, dimensions[1] / 2, 0])
 
         createBoundaries(dimensions[0], dimensions[1])
@@ -138,6 +138,12 @@ def drop_ball(agents):
         ball_pos = [pos[0], pos[1], 2]
         p.loadURDF("data/sphere_small.urdf", ball_pos)
 
+def drop_cube(agents):
+    for i in agents:
+        pos = p.getBasePositionAndOrientation(i)[0]
+        cube_pos = [pos[0], pos[1], 2]
+        p.loadURDF("cube.urdf", cube_pos, globalScaling=0.1)
+
 physicsClient = p.connect(p.GUI)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 planeId = p.loadURDF("plane.urdf")
@@ -146,23 +152,14 @@ p.setGravity(0, 0, -10)
 startOrientation = p.getQuaternionFromEuler([0,0,0])
 global env_loaded
 env_loaded = False
+
 agents, goals, env_loaded = read_input("scene/room_scene_4_bots.yaml", env_loaded)
 cbs.main("scene/room_scene_4_bots.yaml", "output.yaml")
 schedule = read_output("output.yaml")
 navigation(agents, goals, schedule)
-drop_ball(agents)
-
-
-
-
-
-# _, goals, env_loaded = read_input("input3.yaml", env_loaded)
-# cbs.main("input3.yaml", "output.yaml")
-# schedule = read_output("output.yaml")
-# navigation(agents, goals, schedule)
-
-
-
-
-
-
+drop_cube(agents)
+time.sleep(2)
+_,goals,env_loaded = read_input("scene/room_scene_4_bots_stage_2.yaml", env_loaded)
+cbs.main("scene/room_scene_4_bots_stage_2.yaml", "output.yaml")
+schedule = read_output("output.yaml")
+navigation(agents, goals, schedule)
