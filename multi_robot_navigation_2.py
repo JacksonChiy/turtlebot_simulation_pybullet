@@ -41,7 +41,7 @@ def check_next_reached(agents, schedule, index):
     return True
 
 def set_velocity(agent, schedule, index):
-    speed = 20
+    speed = 15
     forward = 0
     basePos = p.getBasePositionAndOrientation(agent)
     x = basePos[0][0]
@@ -124,8 +124,6 @@ def navigation(agents, goals, schedule):
     index = 0
     while (not check_goal_reached(agents, goals)):
         time.sleep(1. / 240.)
-
-
         for i in agents:
             leftWheelVelocity, rightWheelVelocity = set_velocity(i, schedule, index)
             print(i, leftWheelVelocity, rightWheelVelocity)
@@ -133,6 +131,12 @@ def navigation(agents, goals, schedule):
             p.setJointMotorControl2(i, 1, p.VELOCITY_CONTROL, targetVelocity=rightWheelVelocity, force=1000)
         if(check_next_reached(agents, schedule, index)):
             index+=1
+
+def drop_ball(agents):
+    for i in agents:
+        pos = p.getBasePositionAndOrientation(i)[0]
+        ball_pos = [pos[0], pos[1], 2]
+        p.loadURDF("data/sphere_small.urdf", ball_pos)
 
 physicsClient = p.connect(p.GUI)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
@@ -146,6 +150,11 @@ agents, goals, env_loaded = read_input("scene/room_scene_4_bots.yaml", env_loade
 cbs.main("scene/room_scene_4_bots.yaml", "output.yaml")
 schedule = read_output("output.yaml")
 navigation(agents, goals, schedule)
+drop_ball(agents)
+
+
+
+
 
 # _, goals, env_loaded = read_input("input3.yaml", env_loaded)
 # cbs.main("input3.yaml", "output.yaml")
