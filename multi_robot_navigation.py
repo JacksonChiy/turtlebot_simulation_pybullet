@@ -6,6 +6,15 @@ from cbs import cbs
 import math
 
 def createBoundaries(length, width):
+    """
+        create rectangular boundaries with length and width
+
+        Args:
+
+        length: integer
+
+        width: integer
+    """
     for i in range(length):
         p.loadURDF("cube.urdf", [i, -1, 0.5])
         p.loadURDF("cube.urdf", [i, width, 0.5])
@@ -18,12 +27,40 @@ def createBoundaries(length, width):
     p.loadURDF("cube.urdf", [-1, -1, 0.5])
 
 def checkPosWithBias(Pos, goal, bias):
+    """
+        Check if pos is at goal with bias
+
+        Args:
+
+        Pos: Position to be checked, [x, y]
+
+        goal: goal position, [x, y]
+
+        bias: bias allowed
+
+        Returns:
+
+        True if pos is at goal, False otherwise
+    """
     if(Pos[0] < goal[0] + bias and Pos[0] > goal[0] - bias and Pos[1] < goal[1] + bias and Pos[1] > goal[1] - bias):
         return True
     else:
         return False
 
 def check_goal_reached(agents,goals):
+    """
+        For each robot, check if the ultimate goal position is reached
+
+        Args:
+
+        agents: array containing the boxID for each agent
+
+        goals: dictionary with boxID as the key and the corresponding goal positions as values
+
+        Returns:
+
+        True if all robots have arrived at their goal position, False otherwise.
+    """
     for i in agents:
         pos = p.getBasePositionAndOrientation(i)[0]
         goal = goals[i]
@@ -32,6 +69,21 @@ def check_goal_reached(agents,goals):
     return True
 
 def check_next_reached(agents, schedule, index):
+    """
+        For each robot, check if the next position in their path is reached
+
+        Args:
+
+        agents: array containing the boxID for each agent
+
+        schedule: dictionary with boxID as key and path to the goal as list for each robot.
+
+        index: index of the current position in the path.
+
+        Returns:
+
+        True if all robots have arrived at their next position, False otherwise.
+    """
     for i in agents:
         pos = p.getBasePositionAndOrientation(i)[0]
         if(index >= len(schedule[i])):
@@ -41,6 +93,21 @@ def check_next_reached(agents, schedule, index):
     return True
 
 def set_velocity(agent, schedule, index):
+    """
+        Set velocity for robots to follow the path in the schedule.
+
+        Args:
+
+        agents: array containing the boxID for each agent
+
+        schedule: dictionary with boxID as key and path to the goal as list for each robot.
+
+        index: index of the current position in the path.
+
+        Returns:
+
+        Leftwheel and rightwheel velocity.
+    """
     speed = 10
     direct = False
     forward = 0
@@ -95,13 +162,13 @@ planeId = p.loadURDF("plane.urdf")
 startOrientation = p.getQuaternionFromEuler([0,0,0])
 agents = []
 goals = {}
-cubeStartPos1 = [0,0,2]
-cubeStartPos2 = [0,0,3]
 
-p.loadURDF("sphere_small.urdf",cubeStartPos1)
-p.loadURDF("sphere_small.urdf",cubeStartPos2)
+
 
 with open("input.yaml", 'r') as param_file:
+    """
+        Read input file, load boundaries, robot and obstacles, set up goals dictionary
+    """
     try:
         param = yaml.load(param_file, Loader=yaml.FullLoader)
     except yaml.YAMLError as exc:
@@ -121,9 +188,13 @@ with open("input.yaml", 'r') as param_file:
     for i in param["map"]["obstacles"]:
         p.loadURDF("cube.urdf", [i[0], i[1], 0.5])
 
+# Run cbs to find path for each agent in the input file
 cbs.main("input.yaml", "output.yaml")
 
 with open("output.yaml", 'r') as param_file:
+    """
+        Read output file to get the path for each robot and store in schedule.
+    """
     try:
         param = yaml.load(param_file, Loader=yaml.FullLoader)
     except yaml.YAMLError as exc:
