@@ -16,7 +16,7 @@
         <!-- new mesh -->
         <mesh filename="turtlebot/kobuki_description/meshes/main_body.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
       <origin rpy="0 0 0" xyz="0.001 0 0.05199"/>
     </visual>
     <collision>
@@ -44,7 +44,7 @@
         <mesh filename="turtlebot/kobuki_description/meshes/wheel.dae"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <geometry>
@@ -76,7 +76,7 @@
         <mesh filename="turtlebot/kobuki_description/meshes/wheel.dae"/>
       </geometry>
       <origin rpy="0 0 0" xyz="0 0 0"/>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <geometry>
@@ -307,7 +307,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -332,7 +332,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -357,7 +357,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -382,7 +382,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -407,7 +407,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -432,7 +432,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_bottom.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -457,7 +457,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/plate_bottom.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -482,7 +482,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_middle.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -507,7 +507,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_middle.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -532,7 +532,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_middle.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -557,7 +557,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_middle.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -582,7 +582,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/plate_middle.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
@@ -607,7 +607,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_top.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -632,7 +632,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_top.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -657,7 +657,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_top.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -682,7 +682,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_top.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -708,7 +708,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_kinect.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -734,7 +734,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/pole_kinect.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -759,7 +759,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/stacks/hexagons/plate_top.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -808,7 +808,7 @@
       <geometry>
         <mesh filename="turtlebot/turtlebot_description/meshes/sensors/kinect.dae"/>
       </geometry>
-      <material name="red"/>
+      <material name="skyblue"/>
     </visual>
     <collision>
       <origin rpy="0 0 0" xyz="-0.0315 0.0 -0.017"/>
@@ -849,4 +849,10 @@
 
   <material name="green"><color rgba="0 1 0 1"/></material>
   <material name="red"><color rgba="1 0 0 1"/></material>
+  <material name="lightskyblue" >
+    <color rgba="0.7764705882352941 0.9882352941176471 1.0 1.0" />
+  </material>
+  <material name="skyblue" >
+    <color rgba="0.4588235294117647 0.7333333333333333 0.9921568627450981 1.0" />
+  </material>
 </robot>

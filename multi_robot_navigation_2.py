@@ -108,7 +108,7 @@ def set_velocity(agent, schedule, index):
 
         Leftwheel and rightwheel velocity.
     """
-    speed = 15
+    speed = 10
     forward = 0
     basePos = p.getBasePositionAndOrientation(agent)
     x = basePos[0][0]
@@ -146,7 +146,7 @@ def set_velocity(agent, schedule, index):
         turn = 0
 
     if(turn != 0):
-        speed = 5
+        speed = 3
     rightWheelVelocity = (forward + turn) * speed
     leftWheelVelocity = (forward - turn) * speed
     return leftWheelVelocity, rightWheelVelocity
@@ -181,7 +181,7 @@ def read_input(yaml_file, env_loaded):
             return None, goals, True
         for i in param["agents"]:
             startPosition = (i["start"][0], i["start"][1], 0)
-            boxId = p.loadURDF("data/turtlebot.urdf", startPosition, startOrientation, globalScaling=1)
+            boxId = p.loadURDF("data/turtlebot.urdf", startPosition, startOrientation, globalScaling=1.5)
             agents.append(boxId)
             goals[boxId] = i["goal"]
         dimensions = param["map"]["dimensions"]
