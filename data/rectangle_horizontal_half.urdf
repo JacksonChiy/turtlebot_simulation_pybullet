@@ -4,13 +4,13 @@
      <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
        <geometry>
-         <box size="1 0.1 1"/>
+         <box size="0.4 0.1 1"/>
        </geometry>
      </visual>
      <collision>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-	 	<box size="1 0.1 1"/>
+	 	<box size="0.4 0.1 1"/>
       </geometry>
     </collision>
    </link>

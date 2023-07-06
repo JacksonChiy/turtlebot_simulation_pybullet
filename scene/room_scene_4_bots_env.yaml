@@ -1,0 +1,165 @@
+agents:
+- goal:
+  - 0
+  - 8
+  name: 1
+  start:
+  - 0
+  - 0
+- goal:
+  - 8
+  - 8
+  name: 2
+  start:
+  - 1
+  - 0
+- goal:
+  - 13
+  - 7
+  name: 3
+  start:
+  - 1
+  - 1
+- goal:
+  - 12
+  - 0
+  name: 4
+  start:
+  - 1
+  - 2
+map:
+  dimensions:
+  - 16
+  - 9
+  obstacles:
+    horizontal:
+      - !!python/tuple
+        - 0
+        - 6
+      - !!python/tuple
+        - 1
+        - 6
+      - !!python/tuple
+        - 2
+        - 6
+      - !!python/tuple
+        - 3
+        - 6
+      - !!python/tuple
+        - 4
+        - 6
+      - !!python/tuple
+        - 5
+        - 6
+      - !!python/tuple
+        - 8
+        - 7
+      - !!python/tuple
+        - 9
+        - 7
+      - !!python/tuple
+        - 10
+        - 7
+      - !!python/tuple
+        - 13
+        - 6
+
+
+      - !!python/tuple
+        - 12
+        - 2
+      - !!python/tuple
+        - 13
+        - 2
+      - !!python/tuple
+        - 14
+        - 2
+    vertical:
+      - !!python/tuple
+        - 3
+        - 0
+      - !!python/tuple
+        - 3
+        - 1
+      - !!python/tuple
+        - 3
+        - 2
+      - !!python/tuple
+        - 3
+        - 3
+      - !!python/tuple
+        - 7
+        - 2
+      - !!python/tuple
+        - 7
+        - 3
+      - !!python/tuple
+        - 7
+        - 4
+      - !!python/tuple
+        - 12
+        - 8
+      - !!python/tuple
+        - 12
+        - 7
+
+      - !!python/tuple
+        - 7
+        - 8
+      - !!python/tuple
+        - 11
+        - 0
+      - !!python/tuple
+        - 11
+        - 1
+      - !!python/tuple
+        - 14
+        - 7
+    top_left_corner:
+      - !!python/tuple
+        - 11
+        - 2
+    top_right_corner:
+
+    bottom_left_corner:
+      - !!python/tuple
+        - 7
+        - 7
+      - !!python/tuple
+        - 12
+        - 6
+    bottom_right_corner:
+      - !!python/tuple
+        - 14
+        - 6
+    horizontal_half:
+      - !!python/tuple
+        - -0.75
+        - 6
+
+    vertical_half:
+      - !!python/tuple
+        - 3
+        - -0.75
+      - !!python/tuple
+        - 11
+        - -0.75
+      - !!python/tuple
+        - 7
+        - 8.75
+      - !!python/tuple
+        - 12
+        - 8.75
+
+
+
+
+
+
+
+
+
+
+
+
+

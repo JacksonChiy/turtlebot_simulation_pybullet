@@ -16,15 +16,15 @@ def createBoundaries(length, width):
         width: integer
     """
     for i in range(length):
-        p.loadURDF("cube.urdf", [i, -1, 0.5])
-        p.loadURDF("cube.urdf", [i, width, 0.5])
+        p.loadURDF("data/rectangle_horizontal.urdf", [i, -1, 0.5])
+        p.loadURDF("data/rectangle_horizontal.urdf", [i, width, 0.5])
     for i in range(width):
-        p.loadURDF("cube.urdf", [-1, i, 0.5])
-        p.loadURDF("cube.urdf", [length, i, 0.5])
-    p.loadURDF("cube.urdf", [length, -1, 0.5])
-    p.loadURDF("cube.urdf", [length, width, 0.5])
-    p.loadURDF("cube.urdf", [-1, width, 0.5])
-    p.loadURDF("cube.urdf", [-1, -1, 0.5])
+        p.loadURDF("data/rectangle_vertical.urdf", [-1, i, 0.5])
+        p.loadURDF("data/rectangle_vertical.urdf", [length, i, 0.5])
+    p.loadURDF("data/rectangle_corner.urdf", [length, -1, 0.5], p.getQuaternionFromEuler([0, 0, -math.pi/2]))
+    p.loadURDF("data/rectangle_corner.urdf", [length, width, 0.5])
+    p.loadURDF("data/rectangle_corner.urdf", [-1, width, 0.5], p.getQuaternionFromEuler([0, 0, math.pi/2]))
+    p.loadURDF("data/rectangle_corner.urdf", [-1, -1, 0.5], p.getQuaternionFromEuler([0, 0, math.pi]))
 
 def checkPosWithBias(Pos, goal, bias):
     """
@@ -108,7 +108,7 @@ def set_velocity(agent, schedule, index):
 
         Leftwheel and rightwheel velocity.
     """
-    speed = 10
+    speed = 20
     forward = 0
     basePos = p.getBasePositionAndOrientation(agent)
     x = basePos[0][0]
@@ -129,12 +129,12 @@ def set_velocity(agent, schedule, index):
 
     print(Orientation[2], goal_direct)
 
-    if (abs(Orientation[2] - goal_direct) <= 0.2):
+    if (abs(Orientation[2] - goal_direct) <= 0.1):
         turn = 0
         direct = True
     else:
         forward = 0
-        turn = goal_direct - Orientation[2]
+        turn = (goal_direct - Orientation[2]) * 0.5
         direct = False
 
     if (direct is True):
@@ -145,8 +145,6 @@ def set_velocity(agent, schedule, index):
         forward = 0
         turn = 0
 
-    if(turn != 0):
-        speed = 3
     rightWheelVelocity = (forward + turn) * speed
     leftWheelVelocity = (forward - turn) * speed
     return leftWheelVelocity, rightWheelVelocity
@@ -181,7 +179,7 @@ def read_input(yaml_file, env_loaded):
             return None, goals, True
         for i in param["agents"]:
             startPosition = (i["start"][0], i["start"][1], 0)
-            boxId = p.loadURDF("data/turtlebot.urdf", startPosition, startOrientation, globalScaling=1.5)
+            boxId = p.loadURDF("data/turtlebot.urdf", startPosition, startOrientation, globalScaling=1)
             agents.append(boxId)
             goals[boxId] = i["goal"]
         dimensions = param["map"]["dimensions"]
@@ -190,8 +188,28 @@ def read_input(yaml_file, env_loaded):
 
         createBoundaries(dimensions[0], dimensions[1])
         if env_loaded is False:
-            for i in param["map"]["obstacles"]:
-                p.loadURDF("cube.urdf", [i[0], i[1], 0.5])
+            for i in param["map"]["obstacles"]["horizontal"]:
+                p.loadURDF("data/rectangle_horizontal.urdf", [i[0], i[1], 0.5])
+            for i in param["map"]["obstacles"]["vertical"]:
+                p.loadURDF("data/rectangle_vertical.urdf", [i[0], i[1], 0.5])
+            if(param["map"]["obstacles"]["top_left_corner"] is not None):
+                for i in param["map"]["obstacles"]["top_left_corner"]:
+                    p.loadURDF("data/rectangle_corner.urdf", [i[0], i[1], 0.5], p.getQuaternionFromEuler([0, 0, math.pi/2]))
+            if (param["map"]["obstacles"]["top_right_corner"] is not None):
+                for i in param["map"]["obstacles"]["top_right_corner"]:
+                    p.loadURDF("data/rectangle_corner.urdf", [i[0], i[1], 0.5])
+            if (param["map"]["obstacles"]["bottom_left_corner"] is not None):
+                for i in param["map"]["obstacles"]["bottom_left_corner"]:
+                    p.loadURDF("data/rectangle_corner.urdf", [i[0], i[1], 0.5], p.getQuaternionFromEuler([0, 0, math.pi]))
+            if (param["map"]["obstacles"]["bottom_right_corner"] is not None):
+                for i in param["map"]["obstacles"]["bottom_right_corner"]:
+                    p.loadURDF("data/rectangle_corner.urdf", [i[0], i[1], 0.5], p.getQuaternionFromEuler([0, 0, -math.pi/2]))
+            if (param["map"]["obstacles"]["horizontal_half"] is not None):
+                for i in param["map"]["obstacles"]["horizontal_half"]:
+                    p.loadURDF("data/rectangle_horizontal_half.urdf", [i[0], i[1], 0.5])
+            if (param["map"]["obstacles"]["vertical_half"] is not None):
+                for i in param["map"]["obstacles"]["vertical_half"]:
+                    p.loadURDF("data/rectangle_vertical_half.urdf", [i[0], i[1], 0.5])
     return agents, goals, True
 
 def read_output(output_yaml_file):
@@ -271,7 +289,7 @@ startOrientation = p.getQuaternionFromEuler([0,0,0])
 global env_loaded
 env_loaded = False
 
-agents, goals, env_loaded = read_input("scene/room_scene_4_bots.yaml", env_loaded)
+agents, goals, env_loaded = read_input("scene/room_scene_4_bots_env.yaml", env_loaded)
 cbs.main("scene/room_scene_4_bots.yaml", "output.yaml")
 schedule = read_output("output.yaml")
 navigation(agents, goals, schedule)
