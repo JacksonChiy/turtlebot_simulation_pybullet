@@ -1,27 +1,27 @@
 agents:
 - goal:
   - 0
-  - 8
+  - 6
   name: 1
   start:
   - 0
   - 0
 - goal:
-  - 8
-  - 8
+  - 5
+  - 6
   name: 2
   start:
   - 1
   - 0
 - goal:
-  - 13
-  - 7
+  - 9
+  - 5
   name: 3
   start:
   - 1
   - 1
 - goal:
-  - 12
+  - 9
   - 0
   name: 4
   start:
@@ -29,96 +29,82 @@ agents:
   - 2
 map:
   dimensions:
-  - 16
-  - 9
+  - 12
+  - 7
   obstacles:
-  - !!python/tuple
-    - 3
-    - 0
-  - !!python/tuple
-    - 3
-    - 1
-  - !!python/tuple
-    - 3
-    - 2
-  - !!python/tuple
-    - 3
-    - 3
-  - !!python/tuple
-    - 0
-    - 6
-  - !!python/tuple
-    - 1
-    - 6
-  - !!python/tuple
-    - 2
-    - 6
-  - !!python/tuple
-    - 3
-    - 6
-  - !!python/tuple
-    - 4
-    - 6
-  - !!python/tuple
-    - 5
-    - 6
-  - !!python/tuple
-    - 7
-    - 7
-  - !!python/tuple
-    - 8
-    - 7
-  - !!python/tuple
-    - 9
-    - 7
-  - !!python/tuple
-    - 10
-    - 7
-  - !!python/tuple
-    - 7
-    - 2
-  - !!python/tuple
-    - 7
-    - 3
-  - !!python/tuple
-    - 7
-    - 4
-  - !!python/tuple
-    - 12
-    - 8
-  - !!python/tuple
-    - 12
-    - 7
-  - !!python/tuple
-    - 12
-    - 6
-  - !!python/tuple
-    - 13
-    - 6
-  - !!python/tuple
-    - 14
-    - 6
-  - !!python/tuple
-    - 14
-    - 7
-  - !!python/tuple
-    - 11
-    - 0
-  - !!python/tuple
-    - 11
-    - 1
-  - !!python/tuple
-    - 11
-    - 2
-  - !!python/tuple
-    - 12
-    - 2
-  - !!python/tuple
-    - 13
-    - 2
-  - !!python/tuple
-    - 14
-    - 2
-  - !!python/tuple
-    - 7
-    - 8
+    - !!python/tuple
+      - 0
+      - 5
+    - !!python/tuple
+      - 1
+      - 5
+    - !!python/tuple
+      - 2
+      - 5
+
+
+
+    - !!python/tuple
+      - 5
+      - 5
+    - !!python/tuple
+      - 6
+      - 5
+    - !!python/tuple
+      - 9
+      - 4
+
+    - !!python/tuple
+      - 9
+      - 1
+    - !!python/tuple
+      - 10
+      - 1
+    - !!python/tuple
+      - 3
+      - 0
+    - !!python/tuple
+      - 3
+      - 1
+    - !!python/tuple
+      - 3
+      - 2
+    - !!python/tuple
+      - 3
+      - 3
+    - !!python/tuple
+      - 5
+      - 1
+    - !!python/tuple
+      - 5
+      - 2
+    - !!python/tuple
+      - 5
+      - 3
+    - !!python/tuple
+      - 4
+      - 6
+    - !!python/tuple
+      - 8
+      - 0
+    - !!python/tuple
+      - 8
+      - 6
+    - !!python/tuple
+      - 8
+      - 5
+    - !!python/tuple
+      - 10
+      - 5
+    - !!python/tuple
+      - 8
+      - 1
+    - !!python/tuple
+      - 4
+      - 5
+    - !!python/tuple
+      - 8
+      - 4
+    - !!python/tuple
+      - 10
+      - 4
