@@ -64,7 +64,7 @@ def check_goal_reached(agents,goals):
     for i in agents:
         pos = p.getBasePositionAndOrientation(i)[0]
         goal = goals[i]
-        if(not checkPosWithBias(pos, goal, 0.3)):
+        if(not checkPosWithBias(pos, goal, 0.4)):
             return False
     return True
 
@@ -88,7 +88,7 @@ def check_next_reached(agents, schedule, index):
         pos = p.getBasePositionAndOrientation(i)[0]
         if(index >= len(schedule[i])):
             continue
-        if (not checkPosWithBias(pos, [schedule[i][index]["x"], schedule[i][index]["y"]], 0.3)):
+        if (not checkPosWithBias(pos, [schedule[i][index]["x"], schedule[i][index]["y"]], 0.4)):
             return False
     return True
 
@@ -108,7 +108,7 @@ def set_velocity(agent, schedule, index):
 
         Leftwheel and rightwheel velocity.
     """
-    speed = 20
+    speed = 30
     forward = 0
     basePos = p.getBasePositionAndOrientation(agent)
     x = basePos[0][0]
@@ -122,31 +122,44 @@ def set_velocity(agent, schedule, index):
 
     Orientation = list(p.getEulerFromQuaternion(basePos[1]))
     goal_direct = math.atan2((next["y"] - y), (next["x"] - x))
+    goal_direct_2 = goal_direct
+    Orient_2 = Orientation[2]
     if goal_direct < 0 and goal_direct < -math.pi / 3:
         goal_direct = goal_direct + math.pi * 2
     if Orientation[2] < 0 and Orientation[2] < -math.pi/3:
         Orientation[2] = Orientation[2] + math.pi*2
 
-    print(Orientation[2], goal_direct)
+    print(agent, Orientation[2], goal_direct)
 
-    if (abs(Orientation[2] - goal_direct) <= 0.1):
+    if (abs(Orientation[2] - goal_direct) <= 0.05):
         turn = 0
         direct = True
     else:
         forward = 0
-        turn = (goal_direct - Orientation[2]) * 0.5
+        if(goal_direct_2 < -math.pi/2 and Orient_2 > math.pi/2):
+            print("here")
+            turn = math.pi - Orient_2 + (goal_direct_2 + math.pi)
+        elif(goal_direct_2 > math.pi/2 and Orient_2 < -math.pi/2):
+            turn = -(math.pi + Orient_2 + math.pi - goal_direct_2)
+        else:
+            print("here2")
+            turn = (goal_direct_2 - Orient_2)
+        print(agent, "turn:", turn)
         direct = False
 
+    print("direct:", direct)
     if (direct is True):
         forward = 1
         turn = 0
 
-    if (checkPosWithBias(basePos[0], [next["x"], next["y"]], 0.2)):
+    if (checkPosWithBias(basePos[0], [next["x"], next["y"]], 0.4)):
         forward = 0
         turn = 0
 
-    rightWheelVelocity = (forward + turn) * speed
-    leftWheelVelocity = (forward - turn) * speed
+    # rightWheelVelocity = (forward + turn) * speed
+    # leftWheelVelocity = (forward - turn) * speed
+    rightWheelVelocity = (forward) * speed + turn * 20
+    leftWheelVelocity = (forward) * speed - turn * 20
     return leftWheelVelocity, rightWheelVelocity
 
 
@@ -249,8 +262,8 @@ def navigation(agents, goals, schedule):
         for i in agents:
             leftWheelVelocity, rightWheelVelocity = set_velocity(i, schedule, index)
             print(i, leftWheelVelocity, rightWheelVelocity)
-            p.setJointMotorControl2(i, 0, p.VELOCITY_CONTROL, targetVelocity=leftWheelVelocity, force=1000)
-            p.setJointMotorControl2(i, 1, p.VELOCITY_CONTROL, targetVelocity=rightWheelVelocity, force=1000)
+            p.setJointMotorControl2(i, 0, p.VELOCITY_CONTROL, targetVelocity=leftWheelVelocity, force=10)
+            p.setJointMotorControl2(i, 1, p.VELOCITY_CONTROL, targetVelocity=rightWheelVelocity, force=10)
         if(check_next_reached(agents, schedule, index)):
             index+=1
 
@@ -293,8 +306,8 @@ agents, goals, env_loaded = read_input("scene/room_scene_4_bots_env.yaml", env_l
 cbs.main("scene/room_scene_4_bots.yaml", "output.yaml")
 schedule = read_output("output.yaml")
 navigation(agents, goals, schedule)
+time.sleep(1)
 drop_cube(agents)
-time.sleep(2)
 _,goals,env_loaded = read_input("scene/room_scene_4_bots_stage_2.yaml", env_loaded)
 cbs.main("scene/room_scene_4_bots_stage_2.yaml", "output.yaml")
 schedule = read_output("output.yaml")
