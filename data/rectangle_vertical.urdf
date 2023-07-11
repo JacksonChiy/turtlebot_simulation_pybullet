@@ -2,6 +2,8 @@
  <robot name="myfirst">
    <link name="base_link">
      <visual>
+          <material name="steelgrey"/>
+
       <origin rpy="0 0 1.57079632679" xyz="0 0 0"/>
        <geometry>
          <box size="1 0.1 1"/>
@@ -14,4 +16,7 @@
       </geometry>
     </collision>
    </link>
+   <material name="steelgrey" >
+    <color rgba="0.43529411764705883 0.5098039215686274 0.5411764705882353 1.0" />
+  </material>
 </robot>
