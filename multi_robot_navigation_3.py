@@ -4,6 +4,7 @@ import pybullet_data
 import yaml
 from cbs import cbs
 import math
+import threading
 
 def createBoundaries(length, width):
     """
@@ -65,8 +66,7 @@ def navigation(agent, goal, schedule):
     """
     basePos = p.getBasePositionAndOrientation(agent)
     index = 0
-    while(not checkPosWithBias(basePos[0], goal, 0.3)):
-        current_time = time.time()
+    while(not checkPosWithBias(basePos[0], goal, 0.2)):
         basePos = p.getBasePositionAndOrientation(agent)
         next = [schedule[index]["x"], schedule[index]["y"]]
         if(checkPosWithBias(basePos[0], next, 0.3)):
@@ -95,10 +95,9 @@ def navigation(agent, goal, schedule):
         distance = math.dist(current, next)
 
         k1 = 50
-        k2 = 30
+        k2 = 10
 
-        linear = k1 * distance * math.cos(theta)
-        # print(linear)
+        linear = k1 * math.cos(theta)
         angular = k2 * theta
 
         rightWheelVelocity = linear + angular
@@ -106,44 +105,9 @@ def navigation(agent, goal, schedule):
 
         p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=leftWheelVelocity, force=100)
         p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=rightWheelVelocity, force=100)
-
-        time.sleep(0.01)
-
-
-
-
-
-
-    # speed = 30
-    # forward = 0
-    # x = basePos[0][0]
-    # y = basePos[0][1]
-    #
-    #
-    #
-    # Orientation = list(p.getEulerFromQuaternion(basePos[1]))
-    # goal_direct = math.atan2((next["y"] - y), (next["x"] - x))
-    #
-    #
-    #
-    #
-    #
-    #
-    # if goal_direct < 0 and goal_direct < -math.pi / 3:
-    #     goal_direct = goal_direct + math.pi * 2
-    # if Orientation[2] < 0 and Orientation[2] < -math.pi/3:
-    #     Orientation[2] = Orientation[2] + math.pi*2
-    #
-    #
-    # if (checkPosWithBias(basePos[0], [next["x"], next["y"]], 0.4)):
-    #     forward = 0
-    #     turn = 0
-    #
-    # # rightWheelVelocity = (forward + turn) * speed
-    # # leftWheelVelocity = (forward - turn) * speed
-    # rightWheelVelocity = (forward) * speed + turn * 20
-    # leftWheelVelocity = (forward) * speed - turn * 20
-    # return leftWheelVelocity, rightWheelVelocity
+        # time.sleep(0.001)
+    # p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
+    # p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
 
 
 def read_input(yaml_file, env_loaded):
@@ -240,8 +204,15 @@ def run(agents, goals, schedule):
         goals: dictionary with boxID as the key and the corresponding goal positions as values
     """
     agent = agents[0]
-    navigation(agent, goals[agent], schedule[agent])
+    agent2 = agents[1]
+    t1 = threading.Thread(target=navigation, args=(agent, goals[agent], schedule[agent]))
+    t2 = threading.Thread(target=navigation, args=(agent2, goals[agent2], schedule[agent2]))
+    t1.start()
+    t2.start()
+    t1.join()
+    t2.join()
 
+    
 def drop_ball(agents):
     """
         Drop ball for each robot at their current positions.
