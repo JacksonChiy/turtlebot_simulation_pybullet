@@ -29,111 +29,89 @@ agents:
   - 2
 map:
   dimensions:
-  - 12
-  - 7
+  - 10
+  - 6
   obstacles:
     horizontal:
       - !!python/tuple
         - 0
-        - 5
+        - 4
       - !!python/tuple
         - 1
-        - 5
-      - !!python/tuple
-        - 2
-        - 5
-
-
-
-      - !!python/tuple
-        - 5
-        - 5
-      - !!python/tuple
-        - 6
-        - 5
-      - !!python/tuple
-        - 9
         - 4
 
       - !!python/tuple
-        - 9
+        - 4
+        - 4
+
+      - !!python/tuple
+        - 7
+        - 3
+
+      - !!python/tuple
+        - 8
         - 1
       - !!python/tuple
-        - 10
+        - 9
         - 1
+
     vertical:
       - !!python/tuple
-        - 3
-        - 0
-      - !!python/tuple
-        - 3
-        - 1
-      - !!python/tuple
-        - 3
         - 2
+        - -0.4
       - !!python/tuple
-        - 3
-        - 3
-      - !!python/tuple
-        - 5
-        - 1
-      - !!python/tuple
-        - 5
         - 2
+        - 0.6
       - !!python/tuple
-        - 5
-        - 3
+        - 2
+        - 1.6
+
       - !!python/tuple
         - 4
-        - 6
+        - 2
+
+
       - !!python/tuple
-        - 8
-        - 0
-      - !!python/tuple
-        - 8
-        - 6
-      - !!python/tuple
-        - 8
+        - 3
         - 5
       - !!python/tuple
-        - 10
+        - 6
         - 5
+      - !!python/tuple
+        - 6
+        - 4
+      - !!python/tuple
+        - 8
+        - 4
 
     top_left_corner:
       - !!python/tuple
-        - 8
+        - 7
         - 1
     top_right_corner:
 
     bottom_left_corner:
       - !!python/tuple
+        - 3
         - 4
-        - 5
       - !!python/tuple
-        - 8
-        - 4
+        - 6
+        - 3
     bottom_right_corner:
       - !!python/tuple
-        - 10
-        - 4
+        - 8
+        - 3
     horizontal_half:
       - !!python/tuple
-        - -0.75
-        - 5
+        - 9.75
+        - 1
     vertical_half:
       - !!python/tuple
         - 3
-        - -0.75
+        - 5.75
       - !!python/tuple
-        - 8
-        - -0.75
-      - !!python/tuple
-        - 8
-        - 6.75
-      - !!python/tuple
-        - 4
-        - 6.75
-
+        - 6
+        - 5.75
 
 
 
