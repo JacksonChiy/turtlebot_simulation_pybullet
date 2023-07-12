@@ -203,16 +203,16 @@ def run(agents, goals, schedule):
 
         goals: dictionary with boxID as the key and the corresponding goal positions as values
     """
-    agent = agents[0]
-    agent2 = agents[1]
-    t1 = threading.Thread(target=navigation, args=(agent, goals[agent], schedule[agent]))
-    t2 = threading.Thread(target=navigation, args=(agent2, goals[agent2], schedule[agent2]))
-    t1.start()
-    t2.start()
-    t1.join()
-    t2.join()
+    threads = []
+    for agent in agents:
+        t = threading.Thread(target=navigation, args=(agent, goals[agent], schedule[agent]))
+        threads.append(t)
+        t.start()
 
-    
+    for t in threads:
+        t.join()
+
+
 def drop_ball(agents):
     """
         Drop ball for each robot at their current positions.

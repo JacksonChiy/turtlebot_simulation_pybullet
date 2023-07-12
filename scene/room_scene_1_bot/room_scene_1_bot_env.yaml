@@ -13,7 +13,20 @@ agents:
   start:
   - 0
   - 1
-
+- goal:
+  - 9
+  - 5
+  name: 3
+  start:
+  - 1
+  - 1
+- goal:
+  - 9
+  - 0
+  name: 4
+  start:
+  - 1
+  - 2
 map:
   dimensions:
   - 10
