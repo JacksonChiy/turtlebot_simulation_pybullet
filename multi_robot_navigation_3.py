@@ -66,10 +66,11 @@ def navigation(agent, goal, schedule):
     """
     basePos = p.getBasePositionAndOrientation(agent)
     index = 0
-    while(not checkPosWithBias(basePos[0], goal, 0.2)):
+    dis_th = 0.2
+    while(not checkPosWithBias(basePos[0], goal, dis_th)):
         basePos = p.getBasePositionAndOrientation(agent)
         next = [schedule[index]["x"], schedule[index]["y"]]
-        if(checkPosWithBias(basePos[0], next, 0.3)):
+        if(checkPosWithBias(basePos[0], next, dis_th)):
             index = index + 1
         if(index == len(schedule)):
             p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
@@ -91,18 +92,20 @@ def navigation(agent, goal, schedule):
         elif theta > 0 and abs(theta - 2 * math.pi) < theta:
             theta = theta - 2 * math.pi
 
-        # print("theta:", theta)
-
         current = [x, y]
 
         distance = math.dist(current, next)
 
         k1 = 5
-        k2 = 20
+        k2 = 30
 
         # linear = k1 * (distance) * math.cos(theta) + 1.0
         A=20
+        # print(agent, "distance", distance)
+        # print(agent, "exp", math.exp(k1 * distance))
+        print(agent, "distance", distance, "exp", math.exp(k1 * distance), A*math.exp(k1 * distance))
         linear =min(A*math.exp(k1 * distance), 30.0)
+        print(agent, linear)
         angular = k2 * theta
 
         rightWheelVelocity = linear + angular
@@ -257,7 +260,9 @@ cbs.main("scene/room_scene_1_bot/room_scene_1_bot.yaml", "output.yaml")
 schedule = read_output("output.yaml")
 threads = []
 run(agents, goals, schedule)
-time.sleep(3)
+
+#TODO: Bug, Simulation closed without sleep
+time.sleep(10)
 # drop_cube(agents)
 # _,goals,env_loaded = read_input("scene/room_scene_4_bots/room_scene_4_bots_stage_2.yaml", env_loaded)
 # cbs.main("scene/room_scene_1_bot_stage_2.yaml", "output.yaml")
