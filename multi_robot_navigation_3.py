@@ -71,7 +71,10 @@ def navigation(agent, goal, schedule):
         next = [schedule[index]["x"], schedule[index]["y"]]
         if(checkPosWithBias(basePos[0], next, 0.3)):
             index = index + 1
-
+        if(index == len(schedule)):
+            p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
+            p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
+            break
         x = basePos[0][0]
         y = basePos[0][1]
         Orientation = list(p.getEulerFromQuaternion(basePos[1]))[2]
@@ -94,10 +97,12 @@ def navigation(agent, goal, schedule):
 
         distance = math.dist(current, next)
 
-        k1 = 50
-        k2 = 10
+        k1 = 5
+        k2 = 20
 
-        linear = k1 * math.cos(theta)
+        # linear = k1 * (distance) * math.cos(theta) + 1.0
+        A=20
+        linear =min(A*math.exp(k1 * distance), 30.0)
         angular = k2 * theta
 
         rightWheelVelocity = linear + angular
@@ -106,8 +111,7 @@ def navigation(agent, goal, schedule):
         p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=leftWheelVelocity, force=100)
         p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=rightWheelVelocity, force=100)
         # time.sleep(0.001)
-    # p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
-    # p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
+
 
 
 def read_input(yaml_file, env_loaded):
@@ -209,8 +213,8 @@ def run(agents, goals, schedule):
         threads.append(t)
         t.start()
 
-    for t in threads:
-        t.join()
+    # for t in threads:
+    #     t.join()
 
 
 def drop_ball(agents):
@@ -251,8 +255,9 @@ env_loaded = False
 agents, goals, env_loaded = read_input("scene/room_scene_1_bot/room_scene_1_bot_env.yaml", env_loaded)
 cbs.main("scene/room_scene_1_bot/room_scene_1_bot.yaml", "output.yaml")
 schedule = read_output("output.yaml")
+threads = []
 run(agents, goals, schedule)
-time.sleep(1)
+time.sleep(3)
 # drop_cube(agents)
 # _,goals,env_loaded = read_input("scene/room_scene_4_bots/room_scene_4_bots_stage_2.yaml", env_loaded)
 # cbs.main("scene/room_scene_1_bot_stage_2.yaml", "output.yaml")

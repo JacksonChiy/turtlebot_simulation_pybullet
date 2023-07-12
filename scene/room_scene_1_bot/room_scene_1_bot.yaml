@@ -14,8 +14,8 @@ agents:
   - 0
   - 1
 - goal:
-  - 9
-  - 5
+  - 7
+  - 4
   name: 3
   start:
   - 1
