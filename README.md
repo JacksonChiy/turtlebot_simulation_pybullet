@@ -14,7 +14,7 @@ python3 -m pybullet_envs.deep_mimic.testrl --arg_file run_humanoid3d_backflip_ar
 Install necessary dependencies to run cbs:
 
 ```shell
-python3 -m pip install -r requirements.txt
+python3 -m pip install -r requirement.txt
 ```
 
 ## To run the simulation

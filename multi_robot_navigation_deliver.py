@@ -48,7 +48,7 @@ def checkPosWithBias(Pos, goal, bias):
     else:
         return False
 
-def navigation(agent, goal, schedule):
+def navigation(agent, goal1, schedule1, goal2, schedule2, target):
     """
         Set velocity for robots to follow the path in the schedule.
 
@@ -66,20 +66,20 @@ def navigation(agent, goal, schedule):
     """
     basePos = p.getBasePositionAndOrientation(agent)
     index = 0
-    dis_th = 0.25
-    while(not checkPosWithBias(basePos[0], goal, dis_th)):
+    dis_th = 0.3
+    while(not checkPosWithBias(basePos[0], goal1, dis_th)):
         basePos = p.getBasePositionAndOrientation(agent)
-        next = [schedule[index]["x"], schedule[index]["y"]]
+        next = [schedule1[index]["x"], schedule1[index]["y"]]
         if(checkPosWithBias(basePos[0], next, dis_th)):
             index = index + 1
-        if(index == len(schedule)):
+        if(index == len(schedule1)):
             p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
             p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
             break
         x = basePos[0][0]
         y = basePos[0][1]
         Orientation = list(p.getEulerFromQuaternion(basePos[1]))[2]
-        goal_direction = math.atan2((schedule[index]["y"] - y), (schedule[index]["x"] - x))
+        goal_direction = math.atan2((schedule1[index]["y"] - y), (schedule1[index]["x"] - x))
         if(Orientation < 0):
             Orientation = Orientation + 2 * math.pi
         if(goal_direction < 0):
@@ -97,15 +97,15 @@ def navigation(agent, goal, schedule):
         distance = math.dist(current, next)
 
         k1 = 5
-        k2 = 30
+        k2 = 20
 
         # linear = k1 * (distance) * math.cos(theta) + 1.0
         A=20
         # print(agent, "distance", distance)
         # print(agent, "exp", math.exp(k1 * distance))
-        print(agent, "distance", distance, "exp", math.exp(k1 * distance), A*math.exp(k1 * distance))
+        # print(agent, "distance", distance, "exp", math.exp(k1 * distance), A*math.exp(k1 * distance))
         linear =min(A*math.exp(k1 * distance), 30.0)
-        print(agent, linear)
+        # print(agent, linear)
         angular = k2 * theta
 
         rightWheelVelocity = linear + angular
@@ -113,7 +113,69 @@ def navigation(agent, goal, schedule):
 
         p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=leftWheelVelocity, force=100)
         p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=rightWheelVelocity, force=100)
-        # time.sleep(0.001)
+
+    basePos = p.getBasePositionAndOrientation(agent)
+    index = 0
+    index_2 = 0
+    while (not checkPosWithBias(basePos[0], goal2, dis_th)):
+
+        if(index_2 < len(target)):
+            next_target = target[index_2]
+            if (checkPosWithBias(basePos[0], next_target, dis_th)):
+                print(agent, next_target)
+
+                p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
+                p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
+                cube_pos = [next_target[0], next_target[1]+1, 1.5]
+                time.sleep(0.68)
+                p.loadURDF("data/small_cube.urdf", cube_pos, globalScaling=1)
+                index_2 = index_2 + 1
+
+        basePos = p.getBasePositionAndOrientation(agent)
+        next = [schedule2[index]["x"], schedule2[index]["y"]]
+        if (checkPosWithBias(basePos[0], next, dis_th)):
+            index = index + 1
+        if (index == len(schedule2)):
+            p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
+            p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
+            break
+        x = basePos[0][0]
+        y = basePos[0][1]
+        Orientation = list(p.getEulerFromQuaternion(basePos[1]))[2]
+        goal_direction = math.atan2((schedule2[index]["y"] - y), (schedule2[index]["x"] - x))
+        if (Orientation < 0):
+            Orientation = Orientation + 2 * math.pi
+        if (goal_direction < 0):
+            goal_direction = goal_direction + 2 * math.pi
+
+        theta = goal_direction - Orientation
+
+        if theta < 0 and abs(theta) > abs(theta + 2 * math.pi):
+            theta = theta + 2 * math.pi
+        elif theta > 0 and abs(theta - 2 * math.pi) < theta:
+            theta = theta - 2 * math.pi
+
+        current = [x, y]
+
+        distance = math.dist(current, next)
+
+        k1 = 5
+        k2 = 35
+
+        # linear = k1 * (distance) * math.cos(theta) + 1.0
+        A = 20
+        # print(agent, "distance", distance)
+        # print(agent, "exp", math.exp(k1 * distance))
+        # print(agent, "distance", distance, "exp", math.exp(k1 * distance), A * math.exp(k1 * distance))
+        linear = min(A * math.exp(k1 * distance), 30.0)
+        # print(agent, linear)
+        angular = k2 * theta
+
+        rightWheelVelocity = linear + angular
+        leftWheelVelocity = linear - angular
+
+        p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=leftWheelVelocity, force=100)
+        p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=rightWheelVelocity, force=100)
 
 
 
@@ -155,33 +217,40 @@ def read_input(yaml_file, env_loaded):
             agents.append(boxId)
             goals[boxId] = i["goal"]
         dimensions = param["map"]["dimensions"]
-        p.resetDebugVisualizerCamera(cameraDistance=4.8, cameraYaw=0, cameraPitch=-89.9,
-                                     cameraTargetPosition=[4.5, 2.5, 0])
+        p.resetDebugVisualizerCamera(cameraDistance=6.8, cameraYaw=0, cameraPitch=-89.9,
+                                     cameraTargetPosition=[7.5, 3.8, 0])
 
-        createBoundaries(dimensions[0], dimensions[1])
+        print(param["map"]["obstacles"].keys())
         if env_loaded is False:
-            for i in param["map"]["obstacles"]["horizontal"]:
-                p.loadURDF("data/rectangle_horizontal.urdf", [i[0], i[1], 0.5])
+            if (param["map"]["obstacles"]["horizontal"] is not None):
+                for i in param["map"]["obstacles"]["horizontal"]:
+                    p.loadURDF("data/rectangle_horizontal_3m_0_3m.urdf", [i[0], i[1], 0.5])
+            for i in param["map"]["obstacles"]["horizontal10"]:
+                p.loadURDF("data/rectangle_horizontal_10m.urdf", [i[0], i[1], 0.5])
+            for i in param["map"]["obstacles"]["horizontal15"]:
+                p.loadURDF("data/rectangle_horizontal_15m.urdf", [i[0], i[1], 0.5])
             for i in param["map"]["obstacles"]["vertical"]:
-                p.loadURDF("data/rectangle_vertical.urdf", [i[0], i[1], 0.5])
+                p.loadURDF("data/rectangle_vertical_2m_0_3m.urdf", [i[0], i[1], 0.5])
+            for i in param["map"]["obstacles"]["vertical9"]:
+                p.loadURDF("data/rectangle_vertical_11m.urdf", [i[0], i[1], 0.5])
             if(param["map"]["obstacles"]["top_left_corner"] is not None):
                 for i in param["map"]["obstacles"]["top_left_corner"]:
-                    p.loadURDF("data/rectangle_corner.urdf", [i[0], i[1], 0.5], p.getQuaternionFromEuler([0, 0, math.pi/2]))
+                    p.loadURDF("data/rectangle_corner_0.3m_wide_reverse.urdf", [i[0], i[1], 0.5], p.getQuaternionFromEuler([0, 0, math.pi/2]))
             if (param["map"]["obstacles"]["top_right_corner"] is not None):
                 for i in param["map"]["obstacles"]["top_right_corner"]:
-                    p.loadURDF("data/rectangle_corner.urdf", [i[0], i[1], 0.5])
+                    p.loadURDF("data/rectangle_corner_0.3m_wide.urdf", [i[0], i[1], 0.5])
             if (param["map"]["obstacles"]["bottom_left_corner"] is not None):
                 for i in param["map"]["obstacles"]["bottom_left_corner"]:
-                    p.loadURDF("data/rectangle_corner.urdf", [i[0], i[1], 0.5], p.getQuaternionFromEuler([0, 0, math.pi]))
+                    p.loadURDF("data/rectangle_corner_0.3m_wide.urdf", [i[0], i[1], 0.5], p.getQuaternionFromEuler([0, 0, math.pi]))
             if (param["map"]["obstacles"]["bottom_right_corner"] is not None):
                 for i in param["map"]["obstacles"]["bottom_right_corner"]:
-                    p.loadURDF("data/rectangle_corner.urdf", [i[0], i[1], 0.5], p.getQuaternionFromEuler([0, 0, -math.pi/2]))
+                    p.loadURDF("data/rectangle_corner_0.3m_wide_reverse.urdf", [i[0], i[1], 0.5], p.getQuaternionFromEuler([0, 0, -math.pi/2]))
             if (param["map"]["obstacles"]["horizontal_half"] is not None):
                 for i in param["map"]["obstacles"]["horizontal_half"]:
                     p.loadURDF("data/rectangle_horizontal_half.urdf", [i[0], i[1], 0.5])
             if (param["map"]["obstacles"]["vertical_half"] is not None):
                 for i in param["map"]["obstacles"]["vertical_half"]:
-                    p.loadURDF("data/rectangle_vertical_half.urdf", [i[0], i[1], 0.5])
+                    p.loadURDF("data/rectangle_vertical_half_0.3m_wide.urdf", [i[0], i[1], 0.5])
     p.configureDebugVisualizer(p.COV_ENABLE_RENDERING, 1)
     return agents, goals, True
 
@@ -204,7 +273,7 @@ def read_output(output_yaml_file):
             print(exc)
     return param["schedule"]
 
-def run(agents, goals, schedule):
+def run(agents, goals1, schedule1, goals2, schedule2, targets):
     """
         Set up loop to publish leftwheel and rightwheel velocity for each robot to reach goal position.
 
@@ -218,7 +287,7 @@ def run(agents, goals, schedule):
     """
     threads = []
     for agent in agents:
-        t = threading.Thread(target=navigation, args=(agent, goals[agent], schedule[agent]))
+        t = threading.Thread(target=navigation, args=(agent, goals1[agent], schedule1[agent], goals2[agent], schedule2[agent], targets[agent]))
         threads.append(t)
         t.start()
 
@@ -271,8 +340,8 @@ def drop_cube(agents):
             childFrameOrientation=childFrameOrientation
         )
 
-# physicsClient = p.connect(p.GUI, options='--width=1920 --height=1080 --mp4=multi_3.mp4 --mp4fps=30')
-physicsClient = p.connect(p.GUI)
+physicsClient = p.connect(p.GUI, options='--width=1920 --height=1080 --mp4=multi_deliver.mp4 --mp4fps=30')
+# physicsClient = p.connect(p.GUI)
 p.setAdditionalSearchPath(pybullet_data.getDataPath())
 planeId = p.loadURDF("plane.urdf")
 
@@ -282,19 +351,22 @@ p.setGravity(0, 0, -10)
 startOrientation = p.getQuaternionFromEuler([0,0,0])
 global env_loaded
 env_loaded = False
-agents, goals, env_loaded = read_input("scene/room_scene_1_bot/room_scene_1_bot_env.yaml", env_loaded)
-cbs.main("scene/room_scene_1_bot/room_scene_1_bot.yaml", "output.yaml")
-schedule = read_output("output.yaml")
-threads = []
-run(agents, goals, schedule)
+agents, goals1, env_loaded = read_input("scene/2_path_scene_4_bots/2_path_scene_4_bots_env.yaml", env_loaded)
+cbs.main("scene/2_path_scene_4_bots/2_path_scene_4_bots.yaml", "output.yaml")
+schedule1 = read_output("output.yaml")
 
 
-#TODO: Bug, Simulation closed without sleep
+_,goals2,env_loaded = read_input("scene/2_path_scene_4_bots/2_path_scene_4_bots_stage_2.yaml", env_loaded)
+cbs.main("scene/2_path_scene_4_bots/2_path_scene_4_bots_stage_2.yaml", "output.yaml")
+schedule2 = read_output("output.yaml")
 
-drop_cube(agents)
-_,goals,env_loaded = read_input("scene/room_scene_1_bot/room_scene_1_bot_stage_2.yaml", env_loaded)
-cbs.main("scene/room_scene_1_bot/room_scene_1_bot_stage_2.yaml", "output.yaml")
-schedule = read_output("output.yaml")
-
-run(agents, goals, schedule)
+targets = {
+    3: [ [8,6], [7,6], [6,6], [5,6], [4,6], [3,6], [2,6] ],
+    4: [ [11,6], [10,6], [9,6]],
+    1: [ [12,2], [11,2], [10,2], [9,2], [8,2], [7,2], [6,2], [5,2], [4,2], [3,2], [2,2] ],
+    2: [ [16,2], [15,2], [14,2], [13,2]]
+}
+# print(goals2)
+# time.sleep(1000)
+run(agents, goals1, schedule1, goals2, schedule2, targets)
 time.sleep(2)
