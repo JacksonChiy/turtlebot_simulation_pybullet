@@ -48,7 +48,7 @@ def checkPosWithBias(Pos, goal, bias):
     else:
         return False
 
-def navigation(agent, goal, schedule):
+def navigation(agent, goal, schedule, goal2, schedule2):
     """
         Set velocity for robots to follow the path in the schedule.
 
@@ -66,15 +66,15 @@ def navigation(agent, goal, schedule):
     """
     basePos = p.getBasePositionAndOrientation(agent)
     index = 0
-    dis_th = 0.25
+    dis_th = 0.4
     while(not checkPosWithBias(basePos[0], goal, dis_th)):
         basePos = p.getBasePositionAndOrientation(agent)
         next = [schedule[index]["x"], schedule[index]["y"]]
         if(checkPosWithBias(basePos[0], next, dis_th)):
             index = index + 1
         if(index == len(schedule)):
-            p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
-            p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=0, force=100)
+            p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=0, force=1)
+            p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=0, force=1)
             break
         x = basePos[0][0]
         y = basePos[0][1]
@@ -96,25 +96,79 @@ def navigation(agent, goal, schedule):
 
         distance = math.dist(current, next)
 
-        k1 = 5
-        k2 = 30
+        k1 = 20
+        k2 = 5
 
-        # linear = k1 * (distance) * math.cos(theta) + 1.0
+        # linear = k1 * (distance) * math.cos(theta) + 5.0
         A=20
         # print(agent, "distance", distance)
         # print(agent, "exp", math.exp(k1 * distance))
-        print(agent, "distance", distance, "exp", math.exp(k1 * distance), A*math.exp(k1 * distance))
-        linear =min(A*math.exp(k1 * distance), 30.0)
-        print(agent, linear)
+        # print(agent, "distance", distance, "exp", math.exp(k1 * distance), A*math.exp(k1 * distance))
+        # linear =min(A*math.exp(k1 * distance * math.cos(theta)), 24.0)
+        linear = k1 * math.cos(theta)
+        # print(agent, linear)
         angular = k2 * theta
 
         rightWheelVelocity = linear + angular
         leftWheelVelocity = linear - angular
 
-        p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=leftWheelVelocity, force=100)
-        p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=rightWheelVelocity, force=100)
+        p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=leftWheelVelocity, force=1)
+        p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=rightWheelVelocity, force=1)
         # time.sleep(0.001)
 
+    print(agent, "here")
+    drop_single_cube(agent)
+    basePos = p.getBasePositionAndOrientation(agent)
+
+    index = 0
+    while(not checkPosWithBias(basePos[0], goal2, dis_th)):
+        basePos = p.getBasePositionAndOrientation(agent)
+        next = [schedule2[index]["x"], schedule2[index]["y"]]
+        if(checkPosWithBias(basePos[0], next, dis_th)):
+            index = index + 1
+        if(index == len(schedule2)):
+            p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=0, force=1)
+            p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=0, force=1)
+            break
+        x = basePos[0][0]
+        y = basePos[0][1]
+        Orientation = list(p.getEulerFromQuaternion(basePos[1]))[2]
+        goal_direction = math.atan2((schedule2[index]["y"] - y), (schedule2[index]["x"] - x))
+        if(Orientation < 0):
+            Orientation = Orientation + 2 * math.pi
+        if(goal_direction < 0):
+            goal_direction = goal_direction + 2 * math.pi
+
+        theta = goal_direction - Orientation
+
+        if theta < 0 and abs(theta) > abs(theta + 2 * math.pi):
+            theta = theta + 2 * math.pi
+        elif theta > 0 and abs(theta - 2 * math.pi) < theta:
+            theta = theta - 2 * math.pi
+
+        current = [x, y]
+
+        distance = math.dist(current, next)
+
+        k1 = 20
+        k2 = 5
+
+        # linear = k1 * (distance) * math.cos(theta) + 5.0
+        A=20
+        # print(agent, "distance", distance)
+        # print(agent, "exp", math.exp(k1 * distance))
+        # print(agent, "distance", distance, "exp", math.exp(k1 * distance), A*math.exp(k1 * distance))
+        # linear =min(A*math.exp(k1 * distance * math.cos(theta)), 24.0)
+        linear = k1 * math.cos(theta)
+        print(agent, linear, theta, angular)
+        angular = k2 * theta
+
+        rightWheelVelocity = linear + angular
+        leftWheelVelocity = linear - angular
+
+        p.setJointMotorControl2(agent, 0, p.VELOCITY_CONTROL, targetVelocity=leftWheelVelocity, force=1)
+        p.setJointMotorControl2(agent, 1, p.VELOCITY_CONTROL, targetVelocity=rightWheelVelocity, force=1)
+        # time.sleep(0.001)
 
 
 def read_input(yaml_file, env_loaded):
@@ -155,8 +209,8 @@ def read_input(yaml_file, env_loaded):
             agents.append(boxId)
             goals[boxId] = i["goal"]
         dimensions = param["map"]["dimensions"]
-        p.resetDebugVisualizerCamera(cameraDistance=4.8, cameraYaw=0, cameraPitch=-89.9,
-                                     cameraTargetPosition=[4.5, 2.5, 0])
+        p.resetDebugVisualizerCamera(cameraDistance=5.7, cameraYaw=0, cameraPitch=-89.9,
+                                     cameraTargetPosition=[7.5, 2.5, 0])
 
         createBoundaries(dimensions[0], dimensions[1])
         if env_loaded is False:
@@ -204,7 +258,7 @@ def read_output(output_yaml_file):
             print(exc)
     return param["schedule"]
 
-def run(agents, goals, schedule):
+def run(agents, goals, schedule, goals2, schedule2):
     """
         Set up loop to publish leftwheel and rightwheel velocity for each robot to reach goal position.
 
@@ -218,7 +272,7 @@ def run(agents, goals, schedule):
     """
     threads = []
     for agent in agents:
-        t = threading.Thread(target=navigation, args=(agent, goals[agent], schedule[agent]))
+        t = threading.Thread(target=navigation, args=(agent, goals[agent], schedule[agent], goals2[agent], schedule2[agent]))
         threads.append(t)
         t.start()
 
@@ -248,28 +302,37 @@ def drop_cube(agents):
         agents: array containing the boxID for each agent
     """
     for i in agents:
+        drop_single_cube(i)
 
-        pos = p.getBasePositionAndOrientation(i)[0]
-        cube_pos = [pos[0], pos[1], 1]
-        cubeID = p.loadURDF("data/small_cube.urdf", cube_pos, globalScaling=1)
-        jointIndex = -1  # -1 implies the base
-        parentFramePosition = [0, 0, 0.45]
-        childFramePosition = [0, 0, 0]
-        parentFrameOrientation = [0, 0, 0, 1]
-        childFrameOrientation = [0, 0, 0, 1]
+def drop_single_cube(agent):
+    """
+        Drop cubes for each robot at their current positions.
 
-        fixedJoint = p.createConstraint(
-            parentBodyUniqueId=i,
-            parentLinkIndex=jointIndex,
-            childBodyUniqueId=cubeID,
-            childLinkIndex=jointIndex,
-            jointType=p.JOINT_FIXED,
-            jointAxis=[0, 0, 0],
-            parentFramePosition=parentFramePosition,
-            childFramePosition=childFramePosition,
-            parentFrameOrientation=parentFrameOrientation,
-            childFrameOrientation=childFrameOrientation
-        )
+        Args:
+
+        agents: array containing the boxID for each agent
+    """
+    pos = p.getBasePositionAndOrientation(agent)[0]
+    cube_pos = [pos[0], pos[1], 1]
+    cubeID = p.loadURDF("data/small_cube.urdf", cube_pos, globalScaling=1)
+    jointIndex = -1  # -1 implies the base
+    parentFramePosition = [0, 0, 0.45]
+    childFramePosition = [0, 0, 0]
+    parentFrameOrientation = [0, 0, 0, 1]
+    childFrameOrientation = [0, 0, 0, 1]
+
+    fixedJoint = p.createConstraint(
+        parentBodyUniqueId=agent,
+        parentLinkIndex=jointIndex,
+        childBodyUniqueId=cubeID,
+        childLinkIndex=jointIndex,
+        jointType=p.JOINT_FIXED,
+        jointAxis=[0, 0, 0],
+        parentFramePosition=parentFramePosition,
+        childFramePosition=childFramePosition,
+        parentFrameOrientation=parentFrameOrientation,
+        childFrameOrientation=childFrameOrientation
+    )
 
 # physicsClient = p.connect(p.GUI, options='--width=1920 --height=1080 --mp4=multi_3.mp4 --mp4fps=30')
 physicsClient = p.connect(p.GUI)
@@ -282,19 +345,13 @@ p.setGravity(0, 0, -10)
 startOrientation = p.getQuaternionFromEuler([0,0,0])
 global env_loaded
 env_loaded = False
-agents, goals, env_loaded = read_input("scene/room_scene_1_bot/room_scene_1_bot_env.yaml", env_loaded)
-cbs.main("scene/room_scene_1_bot/room_scene_1_bot.yaml", "output.yaml")
+agents, goals, env_loaded = read_input("scene/room_scene_2/room_scene_2_env.yaml", env_loaded)
+
+# time.sleep(1000)
+cbs.main("scene/room_scene_2/room_scene_2.yaml", "output.yaml")
 schedule = read_output("output.yaml")
-threads = []
-run(agents, goals, schedule)
-
-
-#TODO: Bug, Simulation closed without sleep
-
-drop_cube(agents)
-_,goals,env_loaded = read_input("scene/room_scene_1_bot/room_scene_1_bot_stage_2.yaml", env_loaded)
-cbs.main("scene/room_scene_1_bot/room_scene_1_bot_stage_2.yaml", "output.yaml")
-schedule = read_output("output.yaml")
-
-run(agents, goals, schedule)
+_,goals2,env_loaded = read_input("scene/room_scene_2/room_scene_2_stage_2.yaml", env_loaded)
+cbs.main("scene/room_scene_2/room_scene_2_stage_2.yaml", "output.yaml")
+schedule2 = read_output("output.yaml")
+run(agents, goals, schedule, goals2, schedule2)
 time.sleep(2)
