@@ -343,6 +343,28 @@ def main(inputFile, outputFile):
         yaml.safe_dump(output, output_yaml)
 
 
+def run(dimensions, obstacles, agents, out_file):
+    print("\nRunning CBS...")
+    # print(f"dimensions {dimensions}")
+    # print(f"agents {agents}")
+    # print(f"obstacles {obstacles}\n")
+
+    env = Environment(dimensions, agents, obstacles)
+
+    # Run CSB search
+    cbs = CBS(env)
+    solution = cbs.search()
+    if not solution:
+        print("Solution not found")
+        return
+
+    # Write to output file
+    output = dict()
+    output["schedule"] = solution
+    output["cost"] = env.compute_solution_cost(solution)
+    with open(out_file, 'w') as output_yaml:
+        yaml.safe_dump(output, output_yaml)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("param", help="input file containing map and obstacles")
