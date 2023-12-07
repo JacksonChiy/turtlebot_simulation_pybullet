@@ -149,11 +149,11 @@ def navigation(agent, goal, schedule):
         y = basePos[0][1]
         Orientation = list(p.getEulerFromQuaternion(basePos[1]))[2]
         goal_direction = math.atan2((schedule[index]["y"] - y), (schedule[index]["x"] - x))
+
         if(Orientation < 0):
             Orientation = Orientation + 2 * math.pi
         if(goal_direction < 0):
             goal_direction = goal_direction + 2 * math.pi
-
         theta = goal_direction - Orientation
 
         if theta < 0 and abs(theta) > abs(theta + 2 * math.pi):
@@ -162,20 +162,9 @@ def navigation(agent, goal, schedule):
             theta = theta - 2 * math.pi
 
         current = [x, y]
-
         distance = math.dist(current, next)
-
-        k1 = 20
-        k2 = 5
-
-        # linear = k1 * (distance) * math.cos(theta) + 5.0
-        A=20
-        # print(agent, "distance", distance)
-        # print(agent, "exp", math.exp(k1 * distance))
-        # print(agent, "distance", distance, "exp", math.exp(k1 * distance), A*math.exp(k1 * distance))
-        # linear =min(A*math.exp(k1 * distance * math.cos(theta)), 24.0)
+        k1, k2, A = 20, 5, 20
         linear = k1 * math.cos(theta)
-        # print(agent, linear)
         angular = k2 * theta
 
         rightWheelVelocity = linear + angular
@@ -232,7 +221,7 @@ p.configureDebugVisualizer(p.COV_ENABLE_RENDERING, 1)
 p.setRealTimeSimulation(1)
 p.setGravity(0, 0, -10)
 p.resetDebugVisualizerCamera(cameraDistance=5.7, cameraYaw=0, cameraPitch=-89.9,
-                                     cameraTargetPosition=[7.5, 2.5, 0])
+                                     cameraTargetPosition=[4.5, 4.5, 4])
 
 
 cbs.run(dimensions=env_params["map"]["dimensions"], obstacles=env_params["map"]["obstacles"], agents=agent_yaml_params["agents"], out_file="./final_challenge/cbs_output.yaml")
