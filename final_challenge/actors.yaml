@@ -1,13 +1,13 @@
 agents:
 - goal:
-  - 9
+  - 6
   - 0
   name: 1
   start:
   - 9
   - 9
 - goal:
-  - 0
+  - 3
   - 0
   name: 2
   start:
